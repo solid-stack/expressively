@@ -1,6 +1,6 @@
 # Express Simpleton
 
-The simplest convention based express framework.
+A convention based express framework.
 
 ## The directory structure
 
