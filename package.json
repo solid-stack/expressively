@@ -20,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/pajtai/express-simpleton/issues"
   },
-  "homepage": "https://github.com/pajtai/express-simpleton"
+  "homepage": "https://github.com/pajtai/express-simpleton",
+  "dependencies": {
+    "bluebird": "^2.9.30",
+    "express-asset-handler": "0.0.0",
+    "express-json-middleware": "0.0.1",
+    "lodash": "^3.9.3"
+  }
 }
