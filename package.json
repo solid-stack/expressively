@@ -1,0 +1,24 @@
+{
+  "name": "express-simpleton",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:pajtai/express-simpleton.git"
+  },
+  "keywords": [
+    "express",
+    "framework",
+    "convention"
+  ],
+  "author": "Peter Ajtai <peter.ajtai@thinksolid.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pajtai/express-simpleton/issues"
+  },
+  "homepage": "https://github.com/pajtai/express-simpleton"
+}
