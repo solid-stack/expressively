@@ -30,9 +30,6 @@ function getConfigs(nodeEnv, configsDir, verbose) {
         .map(function(content) {
             return JSON.parse(_.template(content)(vars));
         })
-        .map(function(config) {
-            return config;
-        })
         .reduce(function (configs, config) {
             return _.extend(configs, config);
         }, {})
