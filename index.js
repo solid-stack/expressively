@@ -32,13 +32,13 @@ function start(options) {
         verbose,
         viewsDirectory;
 
-    if (!options.app || !options.baseDirectory || !options.express) {
-        throw new Error('You must pass in an options object that has options.app, options.baseDirectory, and options.express');
+    if (!options.baseDirectory) {
+        throw new Error('You must pass in an options object that has options.baseDirectory');
     }
 
-    app             = options.app;
+    express         = options.express   || require('express');
+    app             = options.app       || express();
     baseDirectory   = options.baseDirectory;
-    express         = options.express;
     verbose         = options.verbose;
 
     configsDirectory    = path.join(baseDirectory, 'configs');
@@ -59,6 +59,8 @@ function start(options) {
             return getConfigs(nodeEnv, configsDirectory, verbose)
         })
         .then(function(configs) {
+            configs.app = app;
+            configs.express = express;
             storedConfigs = configs;
         })
         .then(checkIfFile(baseDirectory, 'startup.js'))
