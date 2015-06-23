@@ -1,6 +1,6 @@
 # Express Simpleton
 
-The simplest convention based express framework.
+A convention based express framework.
 
 ## The directory structure
 
@@ -9,6 +9,10 @@ The simplest convention based express framework.
     middlewares
     public
     views
+    assets.json
+    routes.json
+    startup.js
+    waitFor.js
 
 ## Usage
 
@@ -22,9 +26,7 @@ var simpleton = require('express-simpleton'),
 // Start the express app based on the files available in the base directory.
 simpleton
     .start({
-        app             : app,
-        baseDirectory   : __dirname,
-        express         : express
+        baseDirectory   : __dirname
     })
     .then(function(configs) {
         console.log('app started with:', configs);
@@ -36,13 +38,18 @@ simpleton
 
 Other options:
 
+`options.express` - express, if not provided, will be created for you
+`options.app` - the express app, if not provided, will be created for you
 `options.verbose` - more output as app starts up.
 
 ## Directories
 
 ### Configs
 
-The configs are dynamically build based on `node.process.NODE_ENV`. Each json file in configs is an underscore template that
+Any point after `startup.js` is called, configs are available synchronously as, `require('express-simpleton').configs()`.
+In addition to the built aspects, configs.env, configs.app, and configs.express are available.
+
+The configs are dynamically built based on `node.process.NODE_ENV`. Each json file in configs is an underscore template that
 gets passed `vars/[NODE_ENV].json`. The resulting json gets extended onto the configs object. 
 
 The configs object is available as `require('express-singleton').configs()` after the `start()` call.
@@ -68,6 +75,7 @@ This directory will be served as static content
 Jade templates
 
 ## Files (in base directory)
+
 
 * [`assets.json`](https://www.npmjs.com/package/express-asset-handler)
 * [`routes.json`](https://www.npmjs.com/package/express-json-middleware)
