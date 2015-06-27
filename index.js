@@ -67,7 +67,7 @@ function start(options) {
         .then(function(isFile) {
             if (isFile) {
                 verbose && console.log('calling startup file');
-                return require(path.join(baseDirectory, 'startup'))(storedConfigs);
+                return require(path.join(baseDirectory, 'startup'))(storedConfigs, app);
             } else {
                 verbose && console.log('not calling startup file');
             }
@@ -97,7 +97,7 @@ function start(options) {
         .then(function(isFile) {
             if (isFile) {
                 verbose && console.log('calling waitFor file');
-                return require(path.join(baseDirectory, 'waitFor'))(storedConfigs);
+                return require(path.join(baseDirectory, 'waitFor'))(storedConfigs, app);
             } else {
                 verbose && console.log('not calling waitFor file');
             }
