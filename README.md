@@ -54,6 +54,8 @@ gets passed `vars/[NODE_ENV].json`. The resulting json gets extended onto the co
 
 The configs object is available as `require('express-singleton').configs()` after the `start()` call.
 
+express and app are attached to the configs object as .express and .app.
+
 Important configs:
 
 ```json
@@ -80,7 +82,8 @@ Jade templates
 * [`assets.json`](https://www.npmjs.com/package/express-asset-handler)
 * [`routes.json`](https://www.npmjs.com/package/express-json-middleware)
 * `waitFor.js` - file gets called immediately before calling app.listen. listen is not called until this is resolved
-* `startup.js` - file gets called immediately after configs are built
+* `startup.js` - file gets called immediately after configs are built. so if you need to do things before the static 
+middleware is added (e.g. node sass) do it here.
 callback to run immediately after configs are assembled - configs passed in as frist argument, if a
 promise is returned will not continue until the promise is resolved. app and express are passed in for convenience as the
 second and third arguments:

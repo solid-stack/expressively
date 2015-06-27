@@ -73,6 +73,9 @@ function start(options) {
             }
         })
         .then(function() {
+            app.use(express.static(publicDirectory));
+        })
+        .then(function() {
             routesFilePath  = path.join(baseDirectory, 'routes.json');
             routes          = require(routesFilePath);
             verbose && console.log('routes file:', routesFilePath);
