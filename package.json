@@ -25,7 +25,7 @@
     "bluebird": "^2.9.30",
     "express": "^4.13.0",
     "express-asset-handler": "0.0.0",
-    "express-json-middleware": "0.0.1",
+    "express-json-middleware": "0.1.0",
     "jade": "^1.11.0",
     "lodash": "^3.9.3"
   }
