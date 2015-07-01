@@ -68,6 +68,7 @@ To send a response and write it to the cache use:
 To clear the static cache use `res.clearCache()` or `require('expressively').clearCache()`. This method return a promise
 that is resolved when the cache files are deleted.
 
+If configs.optimize is false, the cache will not be used.
 
 ### Configs
 

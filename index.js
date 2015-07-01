@@ -46,6 +46,15 @@ function start(options) {
 
     return BB
         .try(function() {
+            return getConfigs(nodeEnv, configsDirectory, verbose);
+        })
+        .then(function(configs) {
+            console.log(configs);
+            configs.app = app;
+            configs.express = express;
+            _.extend(storedConfigs, configs);
+        })
+        .then(function() {
             viewsDirectory = path.join(baseDirectory, 'views');
             app.set('views', viewsDirectory);
             app.set('view engine', 'jade');
@@ -55,7 +64,8 @@ function start(options) {
                 app         : app,
                 express     : express,
                 cacheDir    : path.join(baseDirectory, 'cache'),
-                verbose     : verbose
+                verbose     : verbose,
+                dev         : ! storedConfigs.optimize
             }));
             verbose && console.log('setup static file cache');
 
@@ -64,14 +74,6 @@ function start(options) {
             app.use(express.static(publicDirectory));
 
             middlewaresDirectory = path.join(baseDirectory, 'middlewares');
-        })
-        .then(function() {
-            return getConfigs(nodeEnv, configsDirectory, verbose)
-        })
-        .then(function(configs) {
-            configs.app = app;
-            configs.express = express;
-            _.extend(storedConfigs, configs);
         })
         .then(checkIfFile(baseDirectory, 'startup.js'))
         .then(function(isFile) {
