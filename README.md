@@ -71,7 +71,7 @@ that is resolved when the cache files are deleted.
 
 ### Configs
 
-Any point after `startup.js` is called, configs are available synchronously as, `require('expressively').configs()`.
+Any point after `startup.js` is called, configs are available synchronously as, `require('expressively').configs`.
 In addition to the built aspects, configs.env, configs.app, and configs.express are available.
 
 The configs are dynamically built based on `node.process.NODE_ENV`. Each json file in configs is an underscore template that
