@@ -1,24 +1,25 @@
 'use strict';
 
-var storedConfigs   = 'Start method must be called before configs are retrieved.',
+var storedConfigs   = {
+        env : 'Start method must be called before configs are retrieved.'
+    },
     routes          = null,
     nodeEnv         = process.env.NODE_ENV || 'dev',
     getConfigs      = require('./getConfigs.js'),
     path            = require('path'),
     createRoutes    = require('express-json-middleware'),
+    staticCache     = require('express-static-file-cache'),
     BB              = require('bluebird'),
-    fs              = BB.promisifyAll(require('fs'));
+    fs              = BB.promisifyAll(require('fs')),
+    _               = require('lodash');
 
 BB.longStackTraces();
 
 module.exports = {
-    configs : configs,
-    start : start
+    configs : storedConfigs,
+    start : start,
+    clearCache : staticCache.clearCache
 };
-
-function configs() {
-    return storedConfigs;
-}
 
 function start(options) {
 
@@ -48,6 +49,15 @@ function start(options) {
             viewsDirectory = path.join(baseDirectory, 'views');
             app.set('views', viewsDirectory);
             app.set('view engine', 'jade');
+            verbose && console.log('setup jade template engine');
+
+            app.use(staticCache.configure({
+                app         : app,
+                express     : express,
+                cacheDir    : path.join(baseDirectory, 'cache'),
+                verbose     : verbose
+            }));
+            verbose && console.log('setup static file cache');
 
             publicDirectory = path.join(baseDirectory, 'public');
             verbose && console.log('public directory', publicDirectory);
@@ -61,7 +71,7 @@ function start(options) {
         .then(function(configs) {
             configs.app = app;
             configs.express = express;
-            storedConfigs = configs;
+            _.extend(storedConfigs, configs);
         })
         .then(checkIfFile(baseDirectory, 'startup.js'))
         .then(function(isFile) {

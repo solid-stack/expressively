@@ -2,13 +2,26 @@
 
 A convention based express framework.
 
+This framework has opinionated defaults, which makes it fast to get up and running, and fun to use (if you like the
+defaults).
+
+* Configs lodash / underscore templated from NODE_ENV based json files
+* dev environment
+* optimized environment with simple css and js minification
+* Jade templating
+* routes and middleware stacks created via json
+* Static html file cache created from jade templating
+
 ## The directory structure
 
+    cache (should be gitignored - static served)
     configs
         vars
     middlewares
-    public
-    views
+        "pages" in index.js / view.jade pods
+        other middlewares
+    public ( static served)
+    views (jade mixins, includes, layouts)
     assets.json
     routes.json
     startup.js
@@ -19,7 +32,7 @@ A convention based express framework.
 A minimal index.js example (express and the app are passed in to give you more control)
 
 ```javascript
-var simpleton = require('express-simpleton'),
+var simpleton = require('expressively'),
     express = require('express'),
     app = express();
     
@@ -44,15 +57,28 @@ Other options:
 
 ## Directories
 
+### Cache
+
+The static file cache is put here.
+
+To send a response and write it to the cache use:
+
+`res.cache(require.resolve('./view.jade', data)`.
+
+To clear the static cache use `res.clearCache()` or `require('expressively').clearCache()`. This method return a promise
+that is resolved when the cache files are deleted.
+
+
 ### Configs
 
-Any point after `startup.js` is called, configs are available synchronously as, `require('express-simpleton').configs()`.
+Any point after `startup.js` is called, configs are available synchronously as, `require('expressively').configs()`.
 In addition to the built aspects, configs.env, configs.app, and configs.express are available.
 
 The configs are dynamically built based on `node.process.NODE_ENV`. Each json file in configs is an underscore template that
 gets passed `vars/[NODE_ENV].json`. The resulting json gets extended onto the configs object. 
 
-The configs object is available as `require('express-singleton').configs()` after the `start()` call.
+The configs object is available as `require('express-singleton').configs` after the `start()` call. Before the start call
+you will see mostly an empty object.
 
 express and app are attached to the configs object as .express and .app.
 
@@ -67,6 +93,9 @@ Important configs:
 ### Middlewares 
 
 [`routes.json`](https://www.npmjs.com/package/express-json-middleware) will look for available middlewares here.
+You can put your "pages" as directories here with each page directory containing and `index.js` and a `view.jade`.
+You can refere to just the directory name in routes.json, and you can do `res.cache(require.resolve('./view.jade'), date)`
+to render your page and cache it.
 
 ### Public
 
@@ -74,7 +103,7 @@ This directory will be served as static content
 
 ### Views
 
-Jade templates
+Jade templates can be stored here for conveniance
 
 ## Files (in base directory)
 

@@ -1,6 +1,6 @@
 {
   "name": "expressively",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:pajtai/express-simpleton.git"
+    "url": "git@github.com:pajtai/expressively.git"
   },
   "keywords": [
     "express",
@@ -26,6 +26,7 @@
     "express": "^4.13.0",
     "express-asset-handler": "0.0.0",
     "express-json-middleware": "0.1.0",
+    "express-static-file-cache": "0.0.1",
     "jade": "^1.11.0",
     "lodash": "^3.9.3"
   }
