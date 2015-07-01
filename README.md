@@ -1,4 +1,4 @@
-# Express Simpleton
+# Expressively
 
 A convention based express framework.
 
