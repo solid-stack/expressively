@@ -1,5 +1,5 @@
 {
-  "name": "express-simpleton",
+  "name": "expressively",
   "version": "0.1.0",
   "description": "",
   "main": "index.js",
@@ -18,9 +18,9 @@
   "author": "Peter Ajtai <peter.ajtai@thinksolid.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/pajtai/express-simpleton/issues"
+    "url": "https://github.com/pajtai/expressively/issues"
   },
-  "homepage": "https://github.com/pajtai/express-simpleton",
+  "homepage": "https://github.com/pajtai/expressively",
   "dependencies": {
     "bluebird": "^2.9.30",
     "express": "^4.13.0",
