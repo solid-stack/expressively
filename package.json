@@ -1,6 +1,6 @@
 {
   "name": "expressively",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/pajtai/expressively",
   "dependencies": {
     "bluebird": "^2.9.30",
+    "chalk": "^1.1.0",
     "express": "^4.13.0",
     "express-asset-handler": "0.0.0",
     "express-json-middleware": "0.1.0",

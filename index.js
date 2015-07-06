@@ -1,6 +1,7 @@
 'use strict';
 
-var storedConfigs   = {
+var DEFAULT_PORT    = 4321,
+    storedConfigs   = {
         env : 'Start method must be called before configs are retrieved.'
     },
     routes          = null,
@@ -11,7 +12,8 @@ var storedConfigs   = {
     staticCache     = require('express-static-file-cache'),
     BB              = require('bluebird'),
     fs              = BB.promisifyAll(require('fs')),
-    _               = require('lodash');
+    _               = require('lodash'),
+    chalk           = require('chalk');
 
 BB.longStackTraces();
 
@@ -46,10 +48,10 @@ function start(options) {
 
     return BB
         .try(function() {
+            verbose && console.log(chalk.green('> getting configs'));
             return getConfigs(nodeEnv, configsDirectory, verbose);
         })
         .then(function(configs) {
-            console.log(configs);
             configs.app = app;
             configs.express = express;
             _.extend(storedConfigs, configs);
@@ -58,7 +60,7 @@ function start(options) {
             viewsDirectory = path.join(baseDirectory, 'views');
             app.set('views', viewsDirectory);
             app.set('view engine', 'jade');
-            verbose && console.log('setup jade template engine');
+            verbose && console.log(chalk.green('> setup jade template engine'));
 
             app.use(staticCache.configure({
                 app         : app,
@@ -67,10 +69,10 @@ function start(options) {
                 verbose     : verbose,
                 dev         : ! storedConfigs.optimize
             }));
-            verbose && console.log('setup static file cache');
+            verbose && console.log(chalk.green('> setup static file cache'));
 
             publicDirectory = path.join(baseDirectory, 'public');
-            verbose && console.log('public directory', publicDirectory);
+            verbose && console.log(chalk.green('> public directory'), publicDirectory);
             app.use(express.static(publicDirectory));
 
             middlewaresDirectory = path.join(baseDirectory, 'middlewares');
@@ -78,29 +80,36 @@ function start(options) {
         .then(checkIfFile(baseDirectory, 'startup.js'))
         .then(function(isFile) {
             if (isFile) {
-                verbose && console.log('calling startup file');
+                verbose && console.log(chalk.green('> calling startup file'));
                 return require(path.join(baseDirectory, 'startup'))(storedConfigs, app);
             } else {
-                verbose && console.log('not calling startup file');
+                verbose && console.log(chalk.green('> not calling startup file'));
             }
         })
         .then(function() {
             app.use(express.static(publicDirectory));
         })
+        .then(checkIfFile(baseDirectory, 'assets.json'))
+        .then(function(isFile) {
+            if (isFile) {
+                verbose && console.log(chalk.green('> getting assets.json'));
+                // TODO: document this
+                app.use(require('express-asset-handler')({
+                    assetsJson : require(path.join(baseDirectory, 'assets.json')),
+                    baseAssetsDir : publicDirectory,
+                    optimize : storedConfigs.optimize,
+                    optimizedAssetsDir : path.join(publicDirectory, 'optimized'),
+                    tmpDir : path.join(baseDirectory, 'tmp')
+                }));
+            } else {
+                verbose && console.log(chalk.green('> not getting assets.json'));
+            }
+
+        })
         .then(function() {
             routesFilePath  = path.join(baseDirectory, 'routes.json');
             routes          = require(routesFilePath);
-            verbose && console.log('routes file:', routesFilePath);
-
-            // TODO: document this
-            app.use(require('express-asset-handler')({
-                assetsJson : require(path.join(baseDirectory, 'assets.json')),
-                baseAssetsDir : publicDirectory,
-                optimize : storedConfigs.optimize,
-                optimizedAssetsDir : path.join(publicDirectory, 'optimized'),
-                tmpDir : path.join(baseDirectory, 'tmp')
-            }));
-
+            verbose && console.log(chalk.green('> routes file:'), routesFilePath);
             createRoutes({
                 app         : app,
                 express     : express,
@@ -111,15 +120,16 @@ function start(options) {
         .then(checkIfFile(baseDirectory, 'waitFor.js'))
         .then(function(isFile) {
             if (isFile) {
-                verbose && console.log('calling waitFor file');
+                verbose && console.log(chalk.green('> calling waitFor file'));
                 return require(path.join(baseDirectory, 'waitFor'))(storedConfigs, app);
             } else {
-                verbose && console.log('not calling waitFor file');
+                verbose && console.log(chalk.green('> not calling waitFor file'));
             }
         })
         .then(function() {
-            app.listen(storedConfigs.port);
-            console.log('express app listening on port: ', storedConfigs.port);
+            var port = storedConfigs.port || DEFAULT_PORT;
+            app.listen(port);
+            console.log(chalk.green('> express app listening on port:'), port);
         })
         .then(function() {
             return storedConfigs;
@@ -130,7 +140,7 @@ function checkIfFile(baseDirectory, fileName) {
     return function() {
         return fs
             .lstatAsync(path.join(baseDirectory, fileName))
-            .then(function(stat) {
+            .then(function() {
                 return true;
             })
             .catch(function() {
