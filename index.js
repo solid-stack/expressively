@@ -13,7 +13,8 @@ var DEFAULT_PORT    = 4321,
     BB              = require('bluebird'),
     fs              = BB.promisifyAll(require('fs')),
     _               = require('lodash'),
-    chalk           = require('chalk');
+    chalk           = require('chalk'),
+    bodyParser = require('body-parser');
 
 BB.longStackTraces();
 
@@ -55,6 +56,9 @@ function start(options) {
             configs.app = app;
             configs.express = express;
             _.extend(storedConfigs, configs);
+        })
+        .then(function() {
+            app.use(bodyParser.urlencoded({ extended: false }));
         })
         .then(function() {
             viewsDirectory = path.join(baseDirectory, 'views');
