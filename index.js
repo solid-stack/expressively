@@ -58,6 +58,7 @@ function start(options) {
             _.extend(storedConfigs, configs);
         })
         .then(function() {
+            app.use(bodyParser.json());
             app.use(bodyParser.urlencoded({ extended: false }));
         })
         .then(function() {
