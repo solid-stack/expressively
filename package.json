@@ -1,6 +1,6 @@
 {
   "name": "expressively",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "express": "^4.13.0",
     "express-asset-handler": "0.0.0",
     "express-json-middleware": "0.1.0",
-    "express-static-file-cache": "0.1.0",
+    "express-static-file-cache": "0.1.1",
     "jade": "^1.11.0",
     "lodash": "^3.9.3"
   }
