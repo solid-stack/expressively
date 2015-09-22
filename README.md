@@ -32,12 +32,12 @@ defaults).
 A minimal index.js example (express and the app are passed in to give you more control)
 
 ```javascript
-var simpleton = require('expressively'),
+var expressively = require('expressively'),
     express = require('express'),
     app = express();
     
 // Start the express app based on the files available in the base directory.
-simpleton
+expressively
     .start({
         baseDirectory   : __dirname
     })
