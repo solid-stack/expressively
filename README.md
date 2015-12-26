@@ -86,7 +86,7 @@ Now on the front end (assuming you are using browserify):
 
 ```javascript
 var io = require('socket.io-client'),
-    socket = io.connect('http://dev.solid.aggregator.com');
+    socket = io.connect('http://my.domain.com');
 
 socket.on('news', function (data) {
     console.log(data);
