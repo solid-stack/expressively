@@ -41,8 +41,8 @@ expressively
     .start({
         baseDirectory   : __dirname
     })
-    .then(function(configs) {
-        console.log('app started with:', configs);
+    .then(function(results) {
+        console.log('app started with:', results.configs);
     })
     .catch(function(error) {
         console.log('there was an error:', error);
@@ -54,6 +54,65 @@ Other options:
 `options.express` - express, if not provided, will be created for you
 `options.app` - the express app, if not provided, will be created for you
 `options.verbose` - more output as app starts up.
+
+## Usage with Socket.io
+
+You can use this with socket.io. Since the docs in socket.io show a more complicated method, below is a full example with browserify.
+You will need to npm install `expressively`, `socket.io`, and `socket.io-client`.
+
+```javascript
+var expressively = require('expressively'),
+    socketio = require('socket.io');
+
+expressively
+    .start({
+        baseDirectory   : __dirname,
+    })
+    .then(function(result){
+
+        var io = socketio(result.server);
+
+        io.on('connection', function (socket) {
+            console.log('socket connected');
+            console.log('you will only see this if someone is looking at the front end');
+            socket.emit('news', { hello: 'world' });
+            socket.on('my other event', function (data) {
+                console.log(data);
+            });
+        });})
+```
+
+Now on the front end (assuming you are using browserify):
+
+```javascript
+var io = require('socket.io-client'),
+    socket = io.connect('http://dev.solid.aggregator.com');
+
+socket.on('news', function (data) {
+    console.log(data);
+    socket.emit('my other event', {my : 'data'});
+});
+```
+
+If you are using nginx and you have issues, make sure your reverse proxy looks something like this:
+
+```
+location / {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-NginX-Proxy true;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $http_host;
+    proxy_set_header Upgrade $http_upgrade;
+
+    proxy_http_version 1.1;
+
+    proxy_pass http://my_app/;
+    proxy_redirect off;
+}
+```
+
+Not have Upgrade and version 1.1 will cause problems.
 
 ## Directories
 

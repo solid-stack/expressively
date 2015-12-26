@@ -132,14 +132,17 @@ function start(options) {
             }
         })
         .then(function() {
-            var port = storedConfigs.port || DEFAULT_PORT;
-            app.listen(port);
+            var port = storedConfigs.port || DEFAULT_PORT,
+                server = app.listen(port);
             console.log(chalk.green('> express app listening on port:'), port);
+            return server;
         })
-        .then(function() {
-            return storedConfigs;
+        .then(function(server) {
+            return {
+                server : server,
+                configs: storedConfigs
+            };
         });
-}
 
 function checkIfFile(baseDirectory, fileName) {
     return function() {
