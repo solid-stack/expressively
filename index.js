@@ -28,11 +28,13 @@ function start(options) {
 
     var app,
         baseDirectory,
+        cacheDirectory,
         configsDirectory,
         express,
         middlewaresDirectory,
         publicDirectory,
         routesFilePath,
+        startupFile,
         verbose,
         viewsDirectory;
 
@@ -45,7 +47,16 @@ function start(options) {
     baseDirectory   = options.baseDirectory;
     verbose         = options.verbose;
 
-    configsDirectory    = path.join(baseDirectory, 'configs');
+    cacheDirectory          = options.cacheDirectory        || path.join(baseDirectory, 'cache');
+    configsDirectory        = options.configsDirectory      || path.join(baseDirectory, 'configs');
+    middlewaresDirectory    = options.middlewaresDirectory  || path.join(baseDirectory, 'middlewares');
+    publicDirectory         = options.publicDirectory       || path.join(baseDirectory, 'public');
+    viewsDirectory          = options.viewsDirectory        || path.join(baseDirectory, 'views');
+
+    startupFile             = options.startupFile           || path.join(baseDirectory, 'startup.js');
+
+
+
 
     return BB
         .try(function() {
@@ -62,7 +73,6 @@ function start(options) {
             app.use(bodyParser.urlencoded({ extended: false }));
         })
         .then(function() {
-            viewsDirectory = path.join(baseDirectory, 'views');
             app.set('views', viewsDirectory);
             app.set('view engine', 'jade');
             verbose && console.log(chalk.green('> setup jade template engine'));
@@ -70,23 +80,21 @@ function start(options) {
             app.use(staticCache.configure({
                 app         : app,
                 express     : express,
-                cacheDir    : path.join(baseDirectory, 'cache'),
+                cacheDir    : cacheDirectory,
                 verbose     : verbose,
                 dev         : ! storedConfigs.optimize
             }));
             verbose && console.log(chalk.green('> setup static file cache'));
 
-            publicDirectory = path.join(baseDirectory, 'public');
             verbose && console.log(chalk.green('> public directory'), publicDirectory);
             app.use(express.static(publicDirectory));
 
-            middlewaresDirectory = path.join(baseDirectory, 'middlewares');
         })
-        .then(checkIfFile(baseDirectory, 'startup.js'))
+        .then(checkIfFile(startupFile)
         .then(function(isFile) {
             if (isFile) {
                 verbose && console.log(chalk.green('> calling startup file'));
-                return require(path.join(baseDirectory, 'startup'))(storedConfigs, app);
+                return require(startupFile)(storedConfigs, app);
             } else {
                 verbose && console.log(chalk.green('> not calling startup file'));
             }
@@ -141,10 +149,10 @@ function start(options) {
         });
 }
 
-function checkIfFile(baseDirectory, fileName) {
+function checkIfFile(filePath) {
     return function() {
         return fs
-            .lstatAsync(path.join(baseDirectory, fileName))
+            .lstatAsync(filePath)
             .then(function() {
                 return true;
             })

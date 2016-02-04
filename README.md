@@ -26,6 +26,18 @@ defaults).
     routes.json
     startup.js
     waitFor.js
+    
+## Options
+    
+Options can be used to override the default directory structure by passing in paths:
+
+* `options.cachDirectory`
+* `options.configsDirectory`
+* `options.middlewaresDirectory`
+* `options.publicDirectory`
+* `options.viewsDirectory`
+
+* `options.startupFile`
 
 ## Usage
 
