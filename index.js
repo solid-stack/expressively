@@ -33,6 +33,7 @@ function start(options) {
         middlewaresDirectory,
         publicDirectory,
         routesFilePath,
+        staticOptions,
         verbose,
         viewsDirectory;
 
@@ -43,6 +44,9 @@ function start(options) {
     express = options.express || require('express');
     app = options.app || express();
     baseDirectory = options.baseDirectory;
+    staticOptions = options.staticOptions || {
+            maxage : '365d'
+        };
     verbose = options.verbose;
 
     configsDirectory = path.join(baseDirectory, 'configs');
@@ -78,7 +82,6 @@ function start(options) {
 
             publicDirectory = path.join(baseDirectory, 'public');
             verbose && console.log(chalk.green('> public directory'), publicDirectory);
-            app.use(express.static(publicDirectory));
 
             middlewaresDirectory = path.join(baseDirectory, 'middlewares');
         })
@@ -92,7 +95,7 @@ function start(options) {
             }
         })
         .then(function () {
-            app.use(express.static(publicDirectory));
+            app.use(express.static(publicDirectory, staticOptions));
         })
         .then(checkIfFile(baseDirectory, 'assets.json'))
         .then(function (isFile) {

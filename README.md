@@ -54,6 +54,7 @@ Other options:
 `options.express` - express, if not provided, will be created for you
 `options.app` - the express app, if not provided, will be created for you
 `options.verbose` - more output as app starts up.
+`options.staticOptions` - the options object to pass to [`express.static`](http://expressjs.com/en/api.html#express.static). Will default to `{ maxage : '365d' }` if nothing is passed in.
 
 ## Usage with Socket.io
 
