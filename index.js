@@ -8,8 +8,6 @@ var DEFAULT_PORT    = 4321,
     nodeEnv         = process.env.NODE_ENV || 'dev',
     getConfigs      = require('./getConfigs.js'),
     path            = require('path'),
-    http            = require('http'),
-    https           = require('https'),
     createRoutes    = require('express-json-middleware'),
     staticCache     = require('express-static-file-cache'),
     BB              = require('bluebird'),
@@ -138,22 +136,8 @@ function start(options) {
         })
         .then(function () {
             var port = storedConfigs.port || DEFAULT_PORT,
-                server = null;
-
-            if(storedConfigs.protocol === 'https') {
-                server = https.createServer({
-                    key: fs.readFileSync(path.join(baseDirectory, storedConfigs.https.key)),
-                    cert: fs.readFileSync(path.join(baseDirectory, storedConfigs.https.cert))
-                }, app);
-            }
-            else {
-                server = http.createServer(app);
-            }
-
-            server.listen(port, function(){
-                console.log(chalk.green('> express app listening on port:'), port);
-            });
-
+                server = app.listen(port);
+            console.log(chalk.green('> express app listening on port:'), port);
             return server;
         })
         .then(function (server) {

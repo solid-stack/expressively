@@ -35,7 +35,7 @@ A minimal index.js example (express and the app are passed in to give you more c
 var expressively = require('expressively'),
     express = require('express'),
     app = express();
-
+    
 // Start the express app based on the files available in the base directory.
 expressively
     .start({
@@ -136,7 +136,7 @@ Any point after `startup.js` is called, configs are available synchronously as, 
 In addition to the built aspects, configs.env, configs.app, and configs.express are available.
 
 The configs are dynamically built based on `node.process.NODE_ENV`. Each json file in configs is an underscore template that
-gets passed `vars/[NODE_ENV].json`. The resulting json gets extended onto the configs object.
+gets passed `vars/[NODE_ENV].json`. The resulting json gets extended onto the configs object. 
 
 The configs object is available as `require('express-singleton').configs` after the `start()` call. Before the start call
 you will see mostly an empty object.
@@ -151,19 +151,7 @@ Important configs:
 }
 ```
 
-Optional configs:
-
-```json
-{
-    "protocol" : "http|https //Only really needed for HTTPS, HTTP is run by default",
-    "https" : {
-        "key" : "//relative path to private key from baseDirectory",
-        "cert" : "//relateive path to certificate from baseDirectory"
-    }
-}
-```
-
-### Middlewares
+### Middlewares 
 
 [`routes.json`](https://www.npmjs.com/package/express-json-middleware) will look for available middlewares here.
 You can put your "pages" as directories here with each page directory containing and `index.js` and a `view.jade`.
@@ -184,7 +172,7 @@ Jade templates can be stored here for conveniance
 * [`assets.json`](https://www.npmjs.com/package/express-asset-handler)
 * [`routes.json`](https://www.npmjs.com/package/express-json-middleware)
 * `waitFor.js` - file gets called immediately before calling app.listen. listen is not called until this is resolved
-* `startup.js` - file gets called immediately after configs are built. so if you need to do things before the static
+* `startup.js` - file gets called immediately after configs are built. so if you need to do things before the static 
 middleware is added (e.g. node sass) do it here.
 callback to run immediately after configs are assembled - configs passed in as frist argument, if a
 promise is returned will not continue until the promise is resolved. app and express are passed in for convenience as the
