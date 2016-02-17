@@ -145,8 +145,7 @@ function start(options) {
                     key: fs.readFileSync(path.join(baseDirectory, storedConfigs.https.key)),
                     cert: fs.readFileSync(path.join(baseDirectory, storedConfigs.https.cert))
                 }, app);
-            }
-            else {
+            } else {
                 server = http.createServer(app);
             }
 
