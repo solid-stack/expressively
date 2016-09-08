@@ -65,8 +65,8 @@ function start(options) {
         .then(function () {
             viewsDirectory = path.join(baseDirectory, 'views');
             app.set('views', viewsDirectory);
-            app.set('view engine', 'jade');
-            verbose && console.log(chalk.green('> setup jade template engine'));
+            app.set('view engine', 'pug');
+            verbose && console.log(chalk.green('> setup pug template engine'));
 
             app.use(staticCache.configure({
                 app : app,
@@ -113,8 +113,8 @@ function start(options) {
         })
         .then(function () {
             routesFilePath = path.join(baseDirectory, 'routes.json');
-            routes = require(routesFilePath);
             verbose && console.log(chalk.green('> routes file:'), routesFilePath);
+            routes = require(routesFilePath);
             createRoutes({
                 app : app,
                 express : express,
