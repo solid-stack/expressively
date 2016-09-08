@@ -15,8 +15,6 @@ defaults).
 ## The directory structure
 
     cache (should be gitignored - static served)
-    configs
-        vars
     middlewares
         "pages" in index.js / view.jade pods
         other middlewares
@@ -34,12 +32,14 @@ A minimal index.js example (express and the app are passed in to give you more c
 ```javascript
 var expressively = require('expressively'),
     express = require('express'),
-    app = express();
+    app = express(),
+    configs = require('./configs);
 
 // Start the express app based on the files available in the base directory.
 expressively
     .start({
-        baseDirectory   : __dirname
+        baseDirectory   : __dirname,
+        configs: configs
     })
     .then(function(results) {
         console.log('app started with:', results.configs);
@@ -132,16 +132,19 @@ If configs.optimize is false, the cache will not be used.
 
 ### Configs
 
-Any point after `startup.js` is called, configs are available synchronously as, `require('expressively').configs`.
-In addition to the built aspects, configs.env, configs.app, and configs.express are available.
+Starting in `v1.0.0` there is less magic in expressively, and configs are not built for you.
+You can now pass them in and use expressively to store them. 
 
-The configs are dynamically built based on `node.process.NODE_ENV`. Each json file in configs is an underscore template that
-gets passed `vars/[NODE_ENV].json`. The resulting json gets extended onto the configs object.
+Expressively can be used to store your configs. Simply pass them in as the value on the `configs` key:
+
+```
+expressively.start({ baseDirectory: __dirname, configs: configs })
+```
+
+In addition to the built aspects, configs.env, configs.app, and configs.express are available.
 
 The configs object is available as `require('express-singleton').configs` after the `start()` call. Before the start call
 you will see mostly an empty object.
-
-express and app are attached to the configs object as .express and .app.
 
 Important configs:
 

@@ -5,8 +5,6 @@ var DEFAULT_PORT    = 4321,
         env : 'Start method must be called before configs are retrieved.'
     },
     routes          = null,
-    nodeEnv         = process.env.NODE_ENV || 'dev',
-    getConfigs      = require('./getConfigs.js'),
     path            = require('path'),
     http            = require('http'),
     https           = require('https'),
@@ -30,7 +28,6 @@ function start(options) {
 
     var app,
         baseDirectory,
-        configsDirectory,
         express,
         middlewaresDirectory,
         publicDirectory,
@@ -51,12 +48,10 @@ function start(options) {
         };
     verbose = options.verbose;
 
-    configsDirectory = path.join(baseDirectory, 'configs');
-
     return BB
         .try(function () {
             verbose && console.log(chalk.green('> getting configs'));
-            return getConfigs(nodeEnv, configsDirectory, verbose);
+            return options.configs || {};
         })
         .then(function (configs) {
             configs.app = app;
