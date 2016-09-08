@@ -10,16 +10,16 @@ defaults).
 * optimized environment with simple css and js minification
 * Jade templating
 * routes and middleware stacks created via json
-* Static html file cache created from jade templating
+* Static html file cache created from pug templating
 
 ## The directory structure
 
     cache (should be gitignored - static served)
     middlewares
-        "pages" in index.js / view.jade pods
+        "pages" in index.js / view.pug pods
         other middlewares
     public ( static served)
-    views (jade mixins, includes, layouts)
+    views (pug mixins, includes, layouts)
     assets.json
     routes.json
     startup.js
@@ -123,7 +123,7 @@ The static file cache is put here.
 
 To send a response and write it to the cache use:
 
-`res.cache(require.resolve('./view.jade', data)`.
+`res.cache(require.resolve('./view.pug', data)`.
 
 To clear the static cache use `res.clearCache()` or `require('expressively').clearCache()`. This method return a promise
 that is resolved when the cache files are deleted.
@@ -169,8 +169,8 @@ Optional configs:
 ### Middlewares
 
 [`routes.json`](https://www.npmjs.com/package/express-json-middleware) will look for available middlewares here.
-You can put your "pages" as directories here with each page directory containing and `index.js` and a `view.jade`.
-You can refere to just the directory name in routes.json, and you can do `res.cache(require.resolve('./view.jade'), date)`
+You can put your "pages" as directories here with each page directory containing and `index.js` and a `view.pug`.
+You can refer to just the directory name in routes.json, and you can do `res.cache(require.resolve('./view.pug'), date)`
 to render your page and cache it.
 
 ### Public
