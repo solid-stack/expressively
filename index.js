@@ -73,7 +73,8 @@ function start(options) {
                 express : express,
                 cacheDir : path.join(baseDirectory, 'cache'),
                 verbose : verbose,
-                dev : !storedConfigs.optimize
+                dev : !storedConfigs.optimize,
+                viewEngine: options.viewEngine
             }));
             verbose && console.log(chalk.green('> setup static file cache'));
 
