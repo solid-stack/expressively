@@ -29,7 +29,7 @@
     "express-asset-handler": "0.0.3",
     "express-json-middleware": "0.1.0",
     "express-static-file-cache": "0.2.3",
-    "jade": "^1.11.0",
-    "lodash": "^3.9.3"
+    "lodash": "^3.9.3",
+    "pug": "^2.0.0-beta6"
   }
 }
