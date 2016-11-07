@@ -209,3 +209,7 @@ module.exports = function(configs, app, express) {
 ## Notes
 
 The optimized dir and baseDir/tmp should be gitignored.
+
+## Release Notes
+
+* `1.1.3` - Dependency fix to fully support pug.
