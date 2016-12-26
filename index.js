@@ -5,9 +5,9 @@ var DEFAULT_PORT    = 4321,
         env : 'Start method must be called before configs are retrieved.'
     },
     routes          = null,
-    nodeEnv         = process.env.NODE_ENV || 'dev',
-    getConfigs      = require('./getConfigs.js'),
     path            = require('path'),
+    http            = require('http'),
+    https           = require('https'),
     createRoutes    = require('express-json-middleware'),
     staticCache     = require('express-static-file-cache'),
     BB              = require('bluebird'),
@@ -28,7 +28,6 @@ function start(options) {
 
     var app,
         baseDirectory,
-        configsDirectory,
         express,
         middlewaresDirectory,
         publicDirectory,
@@ -49,12 +48,10 @@ function start(options) {
         };
     verbose = options.verbose;
 
-    configsDirectory = path.join(baseDirectory, 'configs');
-
     return BB
         .try(function () {
             verbose && console.log(chalk.green('> getting configs'));
-            return getConfigs(nodeEnv, configsDirectory, verbose);
+            return options.configs || {};
         })
         .then(function (configs) {
             configs.app = app;
@@ -68,15 +65,16 @@ function start(options) {
         .then(function () {
             viewsDirectory = path.join(baseDirectory, 'views');
             app.set('views', viewsDirectory);
-            app.set('view engine', 'jade');
-            verbose && console.log(chalk.green('> setup jade template engine'));
+            app.set('view engine', 'pug');
+            verbose && console.log(chalk.green('> setup pug template engine'));
 
             app.use(staticCache.configure({
                 app : app,
                 express : express,
                 cacheDir : path.join(baseDirectory, 'cache'),
                 verbose : verbose,
-                dev : !storedConfigs.optimize
+                dev : !storedConfigs.optimize,
+                viewEngine: options.viewEngine
             }));
             verbose && console.log(chalk.green('> setup static file cache'));
 
@@ -116,8 +114,8 @@ function start(options) {
         })
         .then(function () {
             routesFilePath = path.join(baseDirectory, 'routes.json');
-            routes = require(routesFilePath);
             verbose && console.log(chalk.green('> routes file:'), routesFilePath);
+            routes = require(routesFilePath);
             createRoutes({
                 app : app,
                 express : express,
@@ -136,8 +134,21 @@ function start(options) {
         })
         .then(function () {
             var port = storedConfigs.port || DEFAULT_PORT,
-                server = app.listen(port);
-            console.log(chalk.green('> express app listening on port:'), port);
+                server = null;
+
+            if(storedConfigs.protocol === 'https') {
+                server = https.createServer({
+                    key: fs.readFileSync(path.join(baseDirectory, storedConfigs.https.key)),
+                    cert: fs.readFileSync(path.join(baseDirectory, storedConfigs.https.cert))
+                }, app);
+            } else {
+                server = http.createServer(app);
+            }
+
+            server.listen(port, function(){
+                console.log(chalk.green('> express app listening on port:'), port);
+            });
+
             return server;
         })
         .then(function (server) {
