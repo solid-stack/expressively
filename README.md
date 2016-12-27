@@ -1,61 +1,25 @@
 # Expressively
 
-A convention based express framework.
+Express with some directory structure associated.
 
-This framework has opinionated defaults, which makes it fast to get up and running, and fun to use (if you like the
-defaults).
+## Options
 
-* Configs lodash / underscore templated from NODE_ENV based json files
-* dev environment
-* optimized environment with simple css and js minification
-* Jade templating
-* routes and middleware stacks created via json
-* Static html file cache created from pug templating
-
-## The directory structure
-
-    cache (should be gitignored - static served)
-    middlewares
-        "pages" in index.js / view.pug pods
-        other middlewares
-    public ( static served)
-    views (pug mixins, includes, layouts)
-    assets.json
-    routes.json
-    startup.js
-    waitFor.js
-
-## Usage
-
-A minimal index.js example (express and the app are passed in to give you more control)
-
-```javascript
-var expressively = require('expressively'),
-    express = require('express'),
-    app = express(),
-    configs = require('./configs);
-
-// Start the express app based on the files available in the base directory.
-expressively
-    .start({
-        baseDirectory   : __dirname,
-        configs: configs
-    })
-    .then(function(results) {
-        console.log('app started with:', results.configs);
-    })
-    .catch(function(error) {
-        console.log('there was an error:', error);
-    });
-```
-
-Other options:
-
-`options.express` - express, if not provided, will be created for you
-`options.app` - the express app, if not provided, will be created for you
-`options.verbose` - more output as app starts up.
-`options.staticOptions` - the options object to pass to [`express.static`](http://expressjs.com/en/api.html#express.static). Will default to `{ maxage : '365d' }` if nothing is passed in.
-
+ * options.app The express app - created if not passed in
+ * options.engine - the express view engine used - defaults to pug
+ * options.express express itself - created if not passed in
+ * options.protocol - if this is 'https', express will handle https - suggested use for dev only
+ * options.https.key - used with options.protocol of https
+ * options.https.crt - used with options.protocol of https
+ * options.staticOptions - options to pass to the express.static call
+ * options.structure - object that describes the directory layout for the app - all paths are relative to structure.base
+ * options.structure.baseDirectory The directory other directory options are relative to - required
+ * options.structure.middlewares Path to the "middlewares" directory use from routes.json
+ * options.structure.routes The location of the routes.json file
+ * options.structure.static An object of directories to be used for express.static - keys are paths
+ * options.structure.startup An array of modules to be rerquired in in series - optionally return promises from them - defaults to []
+ * options.structure.views The express "views" directory
+ * options.verbose If you want verbose outpout
+    
 ## Usage with Socket.io
 
 You can use this with socket.io. Since the docs in socket.io show a more complicated method, below is a full example with browserify.
@@ -67,7 +31,7 @@ var expressively = require('expressively'),
 
 expressively
     .start({
-        baseDirectory   : __dirname,
+        ...
     })
     .then(function(result){
 
@@ -117,34 +81,11 @@ Not have Upgrade and version 1.1 will cause problems.
 
 ## Directories
 
-### Cache
-
-The static file cache is put here.
-
-To send a response and write it to the cache use:
-
-`res.cache(require.resolve('./view.pug', data)`.
-
-To clear the static cache use `res.clearCache()` or `require('expressively').clearCache()`. This method return a promise
-that is resolved when the cache files are deleted.
-
-If configs.optimize is false, the cache will not be used.
-
 ### Configs
 
 Starting in `v1.0.0` there is less magic in expressively, and configs are not built for you.
-You can now pass them in and use expressively to store them. 
-
-Expressively can be used to store your configs. Simply pass them in as the value on the `configs` key:
-
-```
-expressively.start({ baseDirectory: __dirname, configs: configs })
-```
-
-In addition to the built aspects, configs.env, configs.app, and configs.express are available.
-
-The configs object is available as `require('express-singleton').configs` after the `start()` call. Before the start call
-you will see mostly an empty object.
+To import your own configs in from anywhere in your app just use `require.main.require('./configs')`. The 
+previous would work if you had a `configs` dir at the level of your main file.
 
 Important configs:
 
@@ -173,43 +114,12 @@ You can put your "pages" as directories here with each page directory containing
 You can refer to just the directory name in routes.json, and you can do `res.cache(require.resolve('./view.pug'), date)`
 to render your page and cache it.
 
-### Public
-
-This directory will be served as static content
-
 ### Views
 
 Jade templates can be stored here for conveniance
 
-## Files (in base directory)
-
-
-* [`assets.json`](https://www.npmjs.com/package/express-asset-handler)
-* [`routes.json`](https://www.npmjs.com/package/express-json-middleware)
-* `waitFor.js` - file gets called immediately before calling app.listen. listen is not called until this is resolved
-* `startup.js` - file gets called immediately after configs are built. so if you need to do things before the static
-middleware is added (e.g. node sass) do it here. If it returns a promise, things wait until the promise is resolved.
-callback to run immediately after configs are assembled - configs passed in as frist argument, if a
-promise is returned will not continue until the promise is resolved. app and express are passed in for convenience as the
-second and third arguments:
-
-```javascript
-// startup.js
-module.exports = function(configs, app, express) {
-    if (configs.optimize) {
-        app.enable('etag');
-        app.use(function (req, res, next) {
-            res.setHeader('Cache-Control', 'private, max-age=' + (365 * 24 * 60 * 60 * 1000));
-            next();
-        });
-    }
-}
-```
-
-## Notes
-
-The optimized dir and baseDir/tmp should be gitignored.
-
 ## Release Notes
 
+* `2.0.0` - Adding more flexibility via configuration and removing some uneeded functionality. Docs incomplete.
 * `1.1.3` - Dependency fix to fully support pug.
+
