@@ -31,7 +31,7 @@ module.exports = {
  * options.https.crt - used with options.protocol of https
  * options.staticOptions - options to pass to the express.static call
  * options.structure - object that describes the directory layout for the app - all paths are relative to structure.base
- * options.structure.baseDirectory The directory other directory options are relative to - required
+ * options.structure.base The directory other directory options are relative to - required
  * options.structure.middlewares Path to the "middlewares" directory use from routes.json
  * options.structure.routes The location of the routes.json file
  * options.structure.static An object of directories to be used for express.static - keys are paths
@@ -113,8 +113,8 @@ function start(options) {
             // Should only be used for dev
             if(options.protocol === 'https') {
                 server = https.createServer({
-                    key: fs.readFileSync(path.join(baseDirectory, options.https.key)),
-                    cert: fs.readFileSync(path.join(baseDirectory, options.https.cert))
+                    key: fs.readFileSync(path.join(structure.base, options.https.key)),
+                    cert: fs.readFileSync(path.join(structure.base, options.https.cert))
                 }, app);
             } else {
                 server = http.createServer(app);
