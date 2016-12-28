@@ -12,14 +12,14 @@ Express with some directory structure associated.
  * options.https.crt - used with options.protocol of https
  * options.staticOptions - options to pass to the express.static call
  * options.structure - object that describes the directory layout for the app - all paths are relative to structure.base
- * options.structure.baseDirectory The directory other directory options are relative to - required
+ * options.structure.base The directory other directory options are relative to - required
  * options.structure.middlewares Path to the "middlewares" directory use from routes.json
  * options.structure.routes The location of the routes.json file
  * options.structure.static An object of directories to be used for express.static - keys are paths
  * options.structure.startup An array of modules to be rerquired in in series - optionally return promises from them - defaults to []
  * options.structure.views The express "views" directory
  * options.verbose If you want verbose outpout
-    
+
 ## Usage with Socket.io
 
 You can use this with socket.io. Since the docs in socket.io show a more complicated method, below is a full example with browserify.
@@ -84,7 +84,7 @@ Not have Upgrade and version 1.1 will cause problems.
 ### Configs
 
 Starting in `v1.0.0` there is less magic in expressively, and configs are not built for you.
-To import your own configs in from anywhere in your app just use `require.main.require('./configs')`. The 
+To import your own configs in from anywhere in your app just use `require.main.require('./configs')`. The
 previous would work if you had a `configs` dir at the level of your main file.
 
 Important configs:
@@ -122,4 +122,3 @@ Jade templates can be stored here for conveniance
 
 * `2.0.0` - Adding more flexibility via configuration and removing some uneeded functionality. Docs incomplete.
 * `1.1.3` - Dependency fix to fully support pug.
-
